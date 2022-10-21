@@ -22,7 +22,27 @@ const getAllDogsToDB = async() => {
             })
         }
     } catch (error) {
-        console.log(error)
+        console.error(error)
+    }
+}
+
+const getAllTemp = async(req, res) => {
+    try {
+        const temperaments = await Temperment.find()
+        if(!temperaments.length){
+            const apiDogs = await axios.get('https://api.thedogapi.com/v1/breeds')
+            const temp = []
+            for (let i = 0; i < 100; i++) {
+                await apiDogs.data[i].temperament.split(',').map(a => temp.push(a))
+            }
+            const newTemps = temp.filter(a => /^[a-zA-Z]+$/.test(a))
+            const allTemp = [...new Set(newTemps)]
+            allTemp.map(async(t)=> await Temperment.create({ name: t }))
+            const allTemperaments = await Temperment.find()
+            res.send(allTemperaments)
+        } else return res.send(temperaments)
+    } catch (error) {
+        console.error(error)
     }
 }
 
@@ -35,11 +55,41 @@ const getAllDogs = async(req, res) => {
             return res.send(doggys)
         } else res.send(dogs)
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 
+const createDog = async(req, res) => {
+    const {name, height, weight, image, temperments, years} = req.body
+    try {
+        await Dog.create({
+            name,
+            height: {
+                min: height.min,
+                max: height.max
+            },
+            weight: {
+                min: weight.min,
+                max: weight.max
+            },
+            image,
+            years,
+            temperments
+        })
+        res.send('new dog created successfully')
+    } catch (error) {
+        console.error(err)
+    }
+}
 
+const getDetails = async(req, res) => {
+    const {id} = req.params
+    try {
+        const dog = await Dog.findById(id)
+        res.json(dog)
+    } catch (error) {
+        console.error(error)
+    }
+}
 
-
-module.exports = {getAllDogs};
+module.exports = {getAllDogs, createDog, getDetails, getAllTemp};
