@@ -1,3 +1,3 @@
 # DogPi-MongoDB
 
-This is a new project im working on with information for a dog api.
+This is a new project im working on with information from a dog api.
