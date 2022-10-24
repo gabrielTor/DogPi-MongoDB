@@ -13,4 +13,4 @@ async function connect(){
 }
 connect()
 
-server.listen(3001, ()=> console.log('server running on Port 3001'))
+server.listen(process.env.PORT, ()=> console.log(`server running on port ${process.env.PORT}`))

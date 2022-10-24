@@ -47,8 +47,14 @@ const getAllTemp = async(req, res) => {
 }
 
 const getAllDogs = async(req, res) => {
+    const {breed} = req.query
     try {
         const dogs = await Dog.find()
+        if(breed){
+            const foundDogs = await dogs.filter(d => d.name.toLocaleLowerCase().includes(breed.toLowerCase()))
+            if(foundDogs.length) return res.send(foundDogs)
+            else return res.send(`no breeds found by ${breed}`)
+        }
         if(!dogs.length){
             await getAllDogsToDB()
             const doggys = await Dog.find()
@@ -92,4 +98,37 @@ const getDetails = async(req, res) => {
     }
 }
 
-module.exports = {getAllDogs, createDog, getDetails, getAllTemp};
+const editDog = async(req, res) => {
+    const {id} = req.params
+    const {name, height, weight, image, temperments, years} = req.body
+    try {
+        await Dog.findByIdAndUpdate(id, {
+            name,
+            height: {
+                min: height.min,
+                max: height.max
+            },
+            weight: {
+                min: weight.min,
+                max: weight.max
+            },
+            image,
+            years,
+            temperments
+        })
+        res.send('updated')
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const deleteDog = async(req, res) => {
+    const {id} = req.params
+    try {
+        await Dog.findByIdAndDelete(id)
+        res.send('deleted')
+    } catch (error) {
+        console.error(error)
+    }
+}
+module.exports = {getAllDogs, createDog, getDetails, getAllTemp, editDog, deleteDog};
