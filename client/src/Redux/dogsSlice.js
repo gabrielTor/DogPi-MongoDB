@@ -4,7 +4,9 @@ export const dogSlice = createSlice({
     name: 'dogs',
     initialState: {
         allDogs: [],
-        details: {}
+        details: {},
+        found: [],
+        allTemps: []
     },
     reducers: {
         getDogs: (state, action)=>{
@@ -12,9 +14,15 @@ export const dogSlice = createSlice({
         },
         getDetails: (state, action)=>{
             state.details = action.payload
+        },
+        findDogs: (state, action)=>{
+            state.found = action.payload
+        },
+        getTemps: (state, action)=>{
+            state.allTemps = action.payload
         }
     }
 })
 
-export const { getDogs, getDetails } = dogSlice.actions
+export const { getDogs, getDetails, findDogs, getTemps } = dogSlice.actions
 export default dogSlice.reducer
