@@ -16,7 +16,7 @@ function Home() {
     return (
         <Box>
             { allDogs?.map(dog => (
-                <DogCard key={dog.id} name={dog.name} image={dog.image} />
+                <DogCard key={dog._id} name={dog.name} image={dog.image} id={dog._id} />
             ))
             }
         </Box>
